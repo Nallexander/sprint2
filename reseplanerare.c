@@ -12,25 +12,42 @@ struct edge {
 struct node {
   char * name;
   struct adjList *connections;   
-} node;
+};
 
 struct adjList {
   struct node *node;
   unsigned short time;
   struct adjList *next;
-}
+};
 
-struct node createNode(char * name) 
+struct node *createNode(char * name) 
 {
-  struct node station  = { .name = name };
+  struct node *station = malloc(sizeof (struct node));
+  station->name = name;
+  station->connections = NULL;
   return station;
 }
 
-void addToAdjList (struct node *node, struct adjList *adjList, unsigned short time){
-  if (adjList->node != NULL){
-    addToAdjList (&node, &(adjList + 1), time);
+void addToAdjList (struct node *node1, struct node *node2, unsigned short time){
+  if (node2->connections == NULL){
+    struct adjList *c = malloc(sizeof (struct adjList));
+    c->node = node1;
+    c->time = time;
+    c->next = NULL;
+    node2->connections = c;
   }
-  else adjList->node = node;
+  else {
+    if (node2->connections->next != NULL){ // Något fel här!]
+    addToAdjList (node1, node2->connections->node, time);
+  }
+  else {
+    struct adjList *d = malloc(sizeof (struct adjList));
+    d->node = node1;
+    d->time = time;
+    d->next = NULL;
+    node2->connections->next = d;
+  }
+  }
 }
 /*
 void connectNodes(struct node *station1, struct node *station2, unsigned short time)
@@ -44,19 +61,18 @@ void connectNodes(struct node *station1, struct node *station2, unsigned short t
 
 int main ()
 {
-  struct node * nodeList = malloc(sizeof(struct node));
-  struct node a = createNode("Polacksbacken");
-  struct node b = createNode("Grindstugan");
-  nodeList[0] = a;
-  nodeList[1] = b;
+  //  struct node *nodeList = malloc(sizeof(struct node));
+  struct node *a = createNode("Polacksbacken");
+  struct node *b = createNode("Grindstugan");
 
-  addToAdjList (nodeList[1], &(nodeList->adjList), 14);
-  //Lägg till edgeList
-  
-  struct edge ab = connectNodes(110, &a, &b, 10);
+  addToAdjList (b, a, 14);
+  addToAdjList (b, a, 13);
+  addToAdjList (b, a, 37);
 
   // test
-  printf("Stationsnamn 1: %s\nStationsnamn 2: %s\nTid mellan stationerna: %d\n", nodeList[0].name, nodeList[1].name, ab.time );
+  printf("Stationsnamn 1: %s\nStationsnamn 2: %s\nTid mellan stationerna: %d\nTid till nästa: %d\n och: %d\n", a->name, b->name, a->connections->time, a->connections->next->time, a->connections->next->next->time);
+  free(a);
+  free(b);
 
   return 0;
 } 
