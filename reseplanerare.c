@@ -38,26 +38,24 @@ void addToAdjList (struct node *Node, struct node *connectionNode, unsigned shor
 }
 
 
-void deleteNode (struct node *deletionNode, struct node *nodeList, int *numberOfStations)
+void deleteNode (char *deleteName, struct node *nodeList, int *numberOfStations)
 {
-  for (i = 0; i <= numberOfStations; i++) {
-    if (deletionNode == nodeList[i]) {
-      nodeList[i] = nodeList[numberOfStations];
-      nodeList[numberOfStations] = NULL;	
-      numberOfStations -= 1;
+  for (int i = 0; i <= (*numberOfStations - 1); i++) {
+    if (deleteName == nodeList[i].name) {
+      nodeList[i] = nodeList[*numberOfStations];
+      nodeList[(*numberOfStations) - 1] = NULL;	
+      *numberOfStations -= 1;
     }
     else {
-      struct adjList **dp = &(nodeList[i]->connections);
-      while ((*dp != deletionNode) || (*dp != NULL)) { 
+      struct adjList **dp = &(nodeList[i].connections);
+      while ((dp->name != deleteName) || (*dp != NULL)) { 
       dp = &((*dp)->next);
       }
-      if (*dp == deletionNode) {
+      if (dp->name == deleteName) {
 	struct adjList **dp2 = &dp;
 	*dp = *(dp->next);
 	free(dp2);
     }
-    *dp = (createAdjList(connectionNode, time));
-
     }
   }
 } 
