@@ -1,13 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-/*
-struct edge {
-  unsigned short bus_line;
-  struct node *station1;
-  struct node *station2;
-  unsigned short time; 
-} edge; 
-*/
 
 struct node {
   char * name;
@@ -36,49 +28,59 @@ struct adjList * createAdjList(struct node * node, unsigned short time) {
   return c;
 }
 
-void addToAdjList (struct node *node1, struct node *node2, unsigned short time){
-  if (node2->connections == NULL){
-    node2->connections = createAdjList(node1, time);
-  }
-  else {
-    if (node2->connections->next == NULL){ // Något fel här!]
-      node2->connections->next = createAdjList(node1, time);
+// seperate module
+void addToAdjList (struct node *Node, struct node *connectionNode, unsigned short time){
+    struct adjList **dp = &(Node->connections);
+    while (*dp != NULL) { 
+      dp = &((*dp)->next);
+    }
+    *dp = (createAdjList(connectionNode, time));
+}
+
+
+void deleteNode (struct node *deletionNode, struct node *nodeList, int *numberOfStations)
+{
+  for (i = 0; i <= numberOfStations; i++) {
+    if (deletionNode == nodeList[i]) {
+      nodeList[i] = nodeList[numberOfStations];
+      nodeList[numberOfStations] = NULL;	
+      numberOfStations -= 1;
     }
     else {
-      struct adjList **dp = &(node2->connections->next);
-	while (*dp != NULL) { 
-	  dp = &((*dp)->next);
-	}
-      *dp = (createAdjList(node1, time));
-
+      struct adjList **dp = &(nodeList[i]->connections);
+      while ((*dp != deletionNode) || (*dp != NULL)) { 
+      dp = &((*dp)->next);
+      }
+      if (*dp == deletionNode) {
+	struct adjList **dp2 = &dp;
+	*dp = *(dp->next);
+	free(dp2);
+    }
+    *dp = (createAdjList(connectionNode, time));
 
     }
-
   }
-}
-/*
-void connectNodes(struct node *station1, struct node *station2, unsigned short time)
-{
-  station1->adjList->node
-  struct edge connection = { .station1 = station1, .station2 = station2, .time = time };
-    return connection;
+} 
 
-}
-*/
 
-int main ()
+//int * numberOfStations
+int main (int argc, char* argv[])
 {
-  //  struct node *nodeList = malloc(sizeof(struct node));
+  struct node *nodeList = malloc(sizeof(struct node)*(atoi(argv[1]))); //2 = numberOfStations
   struct node *a = createNode("Polacksbacken");
   struct node *b = createNode("Grindstugan");
+  nodeList[0] = *(a);
+  nodeList[1] = *(b);
 
-  addToAdjList (b, a, 14);
-  addToAdjList (b, a, 13);
-  addToAdjList (b, a, 37);
-  addToAdjList (b, a, 50);
+  addToAdjList ((nodeList), (nodeList +1), 14);
+  addToAdjList (a, b, 13);
+  addToAdjList (a, b, 37);
+  addToAdjList (a, b, 50);
+  addToAdjList (a, b, 50);
 
-  // test
+  // skriv ut test
   printf("Stationsnamn 1: %s\nStationsnamn 2: %s\nTid mellan stationerna: %d\nTid till nästa: %d\n och: %d\n och: %d\n", a->name, b->name, a->connections->time, a->connections->next->time, a->connections->next->next->time, a->connections->next->next->next->time);
+  printf("nodeList[0]->name: %s\nnodeList[1]->name: %s\n", nodeList->name, (nodeList +1)->name);
   free(a);
   free(b);
 
