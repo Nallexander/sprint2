@@ -37,33 +37,44 @@ void addToAdjList (struct node *Node, struct node *connectionNode, unsigned shor
     *dp = (createAdjList(connectionNode, time));
 }
 
+void deleteName (struct node *Node, char *name) {
+  struct adjList **currentAdjList = &(Node->connections);
+  while ((*currentAdjList != NULL)) {
+    
+    if  ((*currentAdjList)->node->name != name)
+      {
+	currentAdjList = &((*currentAdjList)->next);
+      }
+    else {
+      struct adjList *dp2 = *currentAdjList;
+      *currentAdjList = ((*currentAdjList)->next);
+      free(dp2);
+    }
+  }
+}
 
-void deleteNode (char *deleteName, struct node *nodeList, unsigned short *numberOfStations)
+void deleteNode (char *name, struct node *nodeList, unsigned short *numberOfStations)
 {
   for (int i = 0; i <= (*numberOfStations - 1); i++) {
 
-    if (deleteName == nodeList[i].name) {
+    if (name == nodeList[i].name) {
       nodeList[i] = nodeList[(*numberOfStations)-1];	
       *numberOfStations -= 1;
     }
 
     else {
-      struct adjList **dp = &(nodeList[i].connections);
-      while ((*dp != NULL)) { 
-
-	if  ((*dp)->node->name != deleteName)
-	  {
-	    dp = &((*dp)->next);
-	  }
-	else {
-	  struct adjList *dp2 = *dp;
-	  *dp = ((*dp)->next);
-	  free(dp2);
-	}
-      }
+      deleteName(&nodeList[i], name);
     }
   } 
 }
+
+
+void deleteConnection (struct node *node1, struct node *node2) {
+  deleteName(node1, (node2->name));
+  deleteName(node2, (node1->name));
+}
+
+
 
 //printStations
 void printConnections(struct node *station)
@@ -110,7 +121,7 @@ int main (int argc, char* argv[])
 
   // skriv ut test
   printf("Stationsnamn 1: %s\nStationsnamn 2: %s\nTid mellan stationerna: %d\nTid till nästa: %d\n och: %d\n och: %d\n", a->name, b->name, a->connections->time, a->connections->next->time, a->connections->next->next->time, a->connections->next->next->next->time);
-  printf("nodeList[0]->name: %s\nnodeList[1]->name: %s\n", ((*nodeList)->name), ((*nodeList) +1)->name);
+  printf("nodeList[0]->name: %s\nnodeList[1]->name: %s\n", ((*nodeList)->name), (*(nodeList + 1))->name);
 
 
   printConnections(*nodeList);
@@ -120,9 +131,13 @@ int main (int argc, char* argv[])
   //printf("nodeList[0]->name: %s\nnodeList[1]->name: %s\n", nodeList->name, (nodeList +1)->name);
 
   printConnections(*nodeList);
-
+  
   free(a);
   free(b);
+  free(c);
+  free(d);
+  free(e);
+  free(nodeList);
 
   return 0;
 } 
