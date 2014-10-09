@@ -56,8 +56,9 @@ void deleteNode (char *deleteName, struct node *nodeList, unsigned short *number
 	    dp = &((*dp)->next);
 	  }
 	else {
+	  struct adjList *dp2 = *dp;
 	  *dp = ((*dp)->next);
-	  free(dp);
+	  free(dp2);
 	}
       }
     }
@@ -115,7 +116,7 @@ int main (int argc, char* argv[])
   printConnections(*nodeList);
 
 
-  deleteNode("Polacksbacken", *nodeList, &numberOfStations);
+  deleteNode("Grindstugan", *nodeList, &numberOfStations);
   //printf("nodeList[0]->name: %s\nnodeList[1]->name: %s\n", nodeList->name, (nodeList +1)->name);
 
   printConnections(*nodeList);
