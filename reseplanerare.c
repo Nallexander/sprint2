@@ -52,7 +52,7 @@ void deleteNode (char *deleteName, struct node *nodeList, unsigned short *number
       }
       if ((*dp)->node->name == deleteName) {
 	struct adjList *dp2 = (*dp);
-	*dp = ((*dp)->next);
+	dp = &((*dp)->next);
 	free(dp2);
     }
     }
@@ -64,7 +64,11 @@ void deleteNode (char *deleteName, struct node *nodeList, unsigned short *number
 void printConnections(struct node *station)
 {
   printf("Connections:\n");
-  
+  struct adjList **dp = &station->connections;
+  while ((*dp) != NULL) {
+    printf("%s\n", (*dp)->node->name);
+    dp = &((*dp)->next);
+  }
 
 }
 
@@ -73,7 +77,7 @@ void printConnections(struct node *station)
 int main (int argc, char* argv[])
 {
 
-  unsigned short numberOfStations = 2;
+  unsigned short numberOfStations = 5;
   if (argc == 2)
     {
       numberOfStations = atoi(argv[1]);
@@ -82,22 +86,34 @@ int main (int argc, char* argv[])
   struct node *nodeList = malloc(sizeof(struct node)*numberOfStations); //2 = numberOfStations
   struct node *a = createNode("Polacksbacken");
   struct node *b = createNode("Grindstugan");
+  struct node *c = createNode("Storgatan");
+  struct node *d = createNode("Wallstreet");
+  struct node *e = createNode("Levitinsgatan");
   nodeList[0] = *(a);
   nodeList[1] = *(b);
+  nodeList[2] = *(c);
+  nodeList[3] = *(d);
+  nodeList[4] = *(e);
 
   addToAdjList ((nodeList), (nodeList +1), 14);
   addToAdjList (a, b, 13);
-  addToAdjList (a, b, 37);
-  addToAdjList (a, b, 50);
-  addToAdjList (a, b, 50);
+  addToAdjList (a, c, 37);
+  addToAdjList (a, d, 50);
+  addToAdjList (a, e, 42);
+  
 
   // skriv ut test
   printf("Stationsnamn 1: %s\nStationsnamn 2: %s\nTid mellan stationerna: %d\nTid till nästa: %d\n och: %d\n och: %d\n", a->name, b->name, a->connections->time, a->connections->next->time, a->connections->next->next->time, a->connections->next->next->next->time);
   printf("nodeList[0]->name: %s\nnodeList[1]->name: %s\n", nodeList->name, (nodeList +1)->name);
 
 
-  deleteNode("Polacksbacken", nodeList, &numberOfStations);
-  printf("nodeList[0]->name: %s\nnodeList[1]->name: %s\n", nodeList->name, (nodeList +1)->name);
+  printConnections(a);
+
+  deleteNode("Polacksbacken", a, &numberOfStations);
+  //printf("nodeList[0]->name: %s\nnodeList[1]->name: %s\n", nodeList->name, (nodeList +1)->name);
+
+  printConnections(a);
+
   free(a);
   free(b);
 
