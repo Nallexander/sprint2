@@ -8,7 +8,6 @@ int isUnique (char **list, char *element) {
     if (strncmp (list[counter], element, 100) == 0) {
       return 0;
     } 
-    
     counter += 1;
   }
   list[counter] = element;
@@ -23,8 +22,7 @@ unsigned short countStations(FILE *inputFile) {
   char node[1024];
   char connection[1024];
   char time[1024];
-  uniqueNodes[0] = "FIRST";
-  for (int i = 1; i != 1024; i++) {
+  for (int i = 0; i != 1024; i++) {
     uniqueNodes[i] = "NOTASTATION";
   }
   while (!feof(inputFile)) {
@@ -40,6 +38,8 @@ unsigned short countStations(FILE *inputFile) {
   }
   return counter;
 }
+
+
 
 int main() {
   char buffer[1024];
