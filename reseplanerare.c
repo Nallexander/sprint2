@@ -58,7 +58,7 @@ void deleteNode (char *name, struct node *nodeList, unsigned short *numberOfStat
   for (int i = 0; i <= (*numberOfStations - 1); i++) {
 
     if (name == nodeList[i].name) {
-      nodeList[i] = nodeList[(*numberOfStations)-2];	
+      nodeList[i] = nodeList[(*numberOfStations)-1];	
       *numberOfStations -= 1;
     }
 
