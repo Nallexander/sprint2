@@ -47,8 +47,8 @@ void deleteName (struct node *Node, char *name) {
       }
     else {
       struct adjList *dp2 = *currentAdjList;
-      currentAdjList = &((*currentAdjList)->next);
-      //free(dp2);
+      *currentAdjList = ((*currentAdjList)->next);
+      free(dp2);
     }
   }
 }
@@ -131,6 +131,7 @@ int main (int argc, char* argv[])
   //printf("nodeList[0]->name: %s\nnodeList[1]->name: %s\n", nodeList->name, (nodeList +1)->name);
 
   printConnections(nodeList);
+  printf("NumberOfStations: %d\n", numberOfStations);
   
   free(a);
   free(b);
