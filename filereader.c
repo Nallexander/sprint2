@@ -4,19 +4,19 @@
 
 int isUnique (char **list, char *element) {
   int counter = 0;
-  while ((strncmp (list[counter], "NOTASTATION", 100)) != 0) {
-    if (strncmp (list[counter], element, 100) == 0) {
+  while ((strncmp(list[counter], "NOTASTATION", 100)) != 0) {
+    if (strncmp(list[counter], element, 100) == 0) {
       return 0;
     } 
-    counter += 1;
+    counter += 1;    
   }
+  strdup(element);
   list[counter] = element;
   return 1;
 }
 
 unsigned short countStations(FILE *inputFile) {
   int counter = 0;
-  char buffer[1024];
   char *uniqueNodes[1024];
   char number[1024];
   char node[1024];
@@ -26,14 +26,12 @@ unsigned short countStations(FILE *inputFile) {
     uniqueNodes[i] = "NOTASTATION";
   }
   while (!feof(inputFile)) {
-    if(fgets(buffer, 1024, inputFile) != NULL) {
-      fscanf(inputFile, "%[^,], %[^,], %[^,], %[^\n]", number, node, connection, time);
-      if (isUnique(uniqueNodes, node)) {
-	counter += 1;
-      }
-      if (isUnique(uniqueNodes, connection)) {
-	counter += 1;
-      }
+    fscanf(inputFile, "%[^,], %[^,], %[^,], %[^\n]", number, node, connection, time);
+    if (isUnique(uniqueNodes, strdup(node))) {
+      counter += 1;
+    }
+    if (isUnique(uniqueNodes, strdup(connection))) {
+      counter += 1;
     }
   }
   return counter;
