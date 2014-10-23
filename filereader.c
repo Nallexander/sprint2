@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "filereader.h"
 
 
 #ifndef _INCL_GUARD_RESE
@@ -53,8 +54,8 @@ struct node *createNodeList(FILE *inputFile, unsigned short numberOfStations)
   char node[1024];
   char connection[1024];
   char time[1024];
-  struct node *nodeList = malloc(sizeof(struct node)*numberOfStations);
-  for (int i = 0; i != numberOfStations-1; i++) {
+  struct node *nodeList = malloc(sizeof(struct node)*numberOfStations+1);
+  for (int i = 0; i != numberOfStations; i++) {
     uniqueNodes[i] = "NOTASTATION";
   }
   while (!feof(inputFile)) 
@@ -66,7 +67,7 @@ struct node *createNodeList(FILE *inputFile, unsigned short numberOfStations)
 	    {
 	      nodeList[counter] = createNode(node);
 	      counter += 1;
-	      createNode(connection);
+	      nodeList[counter] = createNode(connection);
 	      counter += 1;
 	      addToAdjList(&nodeList[counter-2], &nodeList[counter-1], atoi(time));
 	      addToAdjList(&nodeList[counter-1], &nodeList[counter-2], atoi(time));

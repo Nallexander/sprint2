@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "reseplanerare.h"
 
   #ifndef _INCL_GUARD_FILE
   #define _INCL_GUARD_FILE
@@ -9,22 +10,9 @@
   #ifndef _INCL_GUARD_RESE
   #define _INCL_GUARD_RESE
 
-struct node {
-  char * name;
-  struct adjList *connections;   
-};
-
-struct adjList {
-  struct node *node;
-  unsigned short time;
-  struct adjList *next;
-};
-
-unsigned short countStations();
-struct node *createNodeList(FILE *inputFile, unsigned short numberOfStations);
-
 struct node createNode(char * name) 
 {
+  strdup(name);
   struct node station = { .name = name, .connections = NULL };
   return station;
 }
@@ -149,9 +137,12 @@ int main (int argc, char* argv[])
     return (-1);
   } 
   unsigned short numberOfStations2 = countStations(inputFile);
-  printf("%d\n", countStations(numberOfStations2));
+  printf("%d\n", numberOfStations2);
+
+  rewind(inputFile);
+
   struct node *nodeList2 = createNodeList(inputFile, numberOfStations2);
-  printf("\n%s\n", nodeList2[1].name);
+  printf("\nNamn: %s\n", nodeList2[3].name);
 
   // skriv ut test
   /* printf("Stationsnamn 1: %s\nStationsnamn 2: %s\nTid mellan stationerna: %d\nTid till nästa: %d\n och: %d\n och: %d\n", a->name, b->name, a->connections->time, a->connections->next->time, a->connections->next->next->time, a->connections->next->next->next->time);
