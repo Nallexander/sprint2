@@ -65,19 +65,19 @@ struct node *createNodeList(FILE *inputFile, unsigned short numberOfStations)
 	{
 	  if (isUnique(uniqueNodes, strdup(connection)))
 	    {
-	      nodeList[counter] = createNode(node);
+	      nodeList[counter] = createNode(strdup(node));
 	      counter += 1;
-	      nodeList[counter] = createNode(connection);
+	      nodeList[counter] = createNode(strdup(connection));
 	      counter += 1;
 	      addToAdjList(&nodeList[counter-2], &nodeList[counter-1], atoi(time));
 	      addToAdjList(&nodeList[counter-1], &nodeList[counter-2], atoi(time));
 	    }
 	  else
 	    {
-	      nodeList[counter] = createNode(node);
+	      nodeList[counter] = createNode(strdup(node));
 	      counter += 1;
-	      addToAdjList(&nodeList[counter-1], &nodeList[findNodeListNumber(nodeList, connection)], atoi(time));
-	      addToAdjList(&nodeList[findNodeListNumber(nodeList, connection)], &nodeList[counter-1], atoi(time));
+	      addToAdjList(&nodeList[counter-1], &nodeList[findNodeListNumber(nodeList, strdup(connection))], atoi(time));
+	      addToAdjList(&nodeList[findNodeListNumber(nodeList, strdup(connection))], &nodeList[counter-1], atoi(time));
 	    }
 
 	}
@@ -85,15 +85,15 @@ struct node *createNodeList(FILE *inputFile, unsigned short numberOfStations)
 	{
 	  if (isUnique(uniqueNodes, strdup(connection)))
 	    {
-	      nodeList[counter] = createNode(connection);
+	      nodeList[counter] = createNode(strdup(connection));
 	      counter += 1;
-	      addToAdjList(&nodeList[counter-1], &nodeList[findNodeListNumber(nodeList, node)], atoi(time));
-	      addToAdjList(&nodeList[findNodeListNumber(nodeList, node)], &nodeList[counter-1], atoi(time));
+	      addToAdjList(&nodeList[counter-1], &nodeList[findNodeListNumber(nodeList, strdup(node))], atoi(time));
+	      addToAdjList(&nodeList[findNodeListNumber(nodeList, strdup(node))], &nodeList[counter-1], atoi(time));
 	    }
 	  else 
 	    {
-	      addToAdjList(&nodeList[findNodeListNumber(nodeList, node)], &nodeList[findNodeListNumber(nodeList, connection)], atoi(time));
-	      addToAdjList(&nodeList[findNodeListNumber(nodeList, connection)], &nodeList[findNodeListNumber(nodeList, node)], atoi(time));
+	      addToAdjList(&nodeList[findNodeListNumber(nodeList, strdup(node))], &nodeList[findNodeListNumber(nodeList, strdup(connection))], atoi(time));
+	      addToAdjList(&nodeList[findNodeListNumber(nodeList, strdup(connection))], &nodeList[findNodeListNumber(nodeList, strdup(node))], atoi(time));
 	    }
 	}
     }
