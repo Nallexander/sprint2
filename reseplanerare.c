@@ -27,11 +27,19 @@ struct adjList * createAdjList(struct node * node, unsigned short time) {
 
 // seperate module
 void addToAdjList (struct node *Node, struct node *connectionNode, unsigned short time){
+  int write = 1;
   struct adjList **dp = &(Node->connections);
   while (*dp != NULL) { 
+    if (strncmp((*dp)->node->name, connectionNode->name, 100) == 0)
+      {
+	write = 0;
+      } 
     dp = &((*dp)->next);
   }
-  *dp = (createAdjList(connectionNode, time));
+  if (write == 1)
+    {
+      *dp = (createAdjList(connectionNode, time));
+    }
 }
 
 void deleteName (struct node *Node, char *name) {
@@ -101,13 +109,13 @@ void printConnections(struct node *station)
 //int * numberOfStations
 int main (int argc, char* argv[])
 {
-
+  /*
   unsigned short numberOfStations = 5;
   if (argc == 2)
     {
       numberOfStations = atoi(argv[1]);
     }
-
+  
   struct node *nodeList = malloc(sizeof(struct node)*numberOfStations); //2 = numberOfStations
   struct node a = createNode("Polacksbacken");
   struct node b = createNode("Grindstugan");
@@ -126,7 +134,7 @@ int main (int argc, char* argv[])
   addToAdjList (nodeList, nodeList + 3, 50);
   addToAdjList (nodeList, nodeList + 4, 42);
   
-
+  */
   //FILEREADER
   //char buffer[1024];
   FILE *inputFile;
@@ -142,13 +150,15 @@ int main (int argc, char* argv[])
   rewind(inputFile);
 
   struct node *nodeList2 = createNodeList(inputFile, numberOfStations2);
-  printf("\nNamn: %s\n", nodeList2[90].name);
+  printf("\nNamn: %s\n", nodeList2[1].name);
+  printConnections(&nodeList2[1]);
 
   // skriv ut test
   /* printf("Stationsnamn 1: %s\nStationsnamn 2: %s\nTid mellan stationerna: %d\nTid till nästa: %d\n och: %d\n och: %d\n", a->name, b->name, a->connections->time, a->connections->next->time, a->connections->next->next->time, a->connections->next->next->next->time);
      printf("nodeList[0]->name: %s\nnodeList[1]->name: %s\n", ((*nodeList)->name), (*(nodeList + 1))->name);
 
   */
+  /*
   printConnections(nodeList);
  
   deleteNode("Grindstugan", nodeList, &numberOfStations);
@@ -161,7 +171,7 @@ int main (int argc, char* argv[])
   printConnections(nodeList);
 
   free(nodeList);
-
+  */
   return 0;
 } 
 
