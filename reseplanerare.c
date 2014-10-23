@@ -12,7 +12,6 @@
 
 struct node createNode(char * name) 
 {
-  strdup(name);
   struct node station = { .name = name, .connections = NULL };
   return station;
 }
@@ -74,12 +73,12 @@ void deleteConnection (struct node *node1, struct node *node2) {
 // Vet att station finns i nodeList
 unsigned short findNodeListNumber(struct node * nodeList, char * station)
 {
-  unsigned short counter = 0;
-  while (station != nodeList[counter].name)
+  unsigned short countStation = 0;
+  while (station != nodeList[countStation].name)
     {
-      counter +=1;
+      countStation +=1;
     }
-  return counter;
+  return countStation;
 }
 
 
@@ -142,7 +141,7 @@ int main (int argc, char* argv[])
   rewind(inputFile);
 
   struct node *nodeList2 = createNodeList(inputFile, numberOfStations2);
-  printf("\nNamn: %s\n", nodeList2[3].name);
+  printf("\nNamn: %s\n", nodeList2[0].name);
 
   // skriv ut test
   /* printf("Stationsnamn 1: %s\nStationsnamn 2: %s\nTid mellan stationerna: %d\nTid till nästa: %d\n och: %d\n och: %d\n", a->name, b->name, a->connections->time, a->connections->next->time, a->connections->next->next->time, a->connections->next->next->next->time);
