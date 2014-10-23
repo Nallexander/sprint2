@@ -2,6 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+#ifndef _INCL_GUARD_RESE
+#include "reseplanerare.c"
+#endif
+
+
+
 int isUnique (char **list, char *element) {
   int counter = 0;
   while ((strncmp(list[counter], "NOTASTATION", 100)) != 0) {
@@ -38,7 +45,62 @@ unsigned short countStations(FILE *inputFile) {
 }
 
 
+struct node *createNodeList(FILE *inputFile, unsigned short numberOfStations)
+{
+  int counter = 0;
+  char *uniqueNodes[numberOfStations];
+  char number[1024];
+  char node[1024];
+  char connection[1024];
+  char time[1024];
+  struct node *nodeList = malloc(sizeof(struct node)*numberOfStations);
+  for (int i = 0; i != numberOfStations-1; i++) {
+    uniqueNodes[i] = "NOTASTATION";
+  }
+  while (!feof(inputFile)) 
+    {
+      fscanf(inputFile, "%[^,], %[^,], %[^,], %[^\n]", number, node, connection, time);
+      if (isUnique(uniqueNodes, strdup(node))) 
+	{
+	  if (isUnique(uniqueNodes, strdup(connection)))
+	    {
+	      nodeList[counter] = createNode(node);
+	      counter += 1;
+	      createNode(connection);
+	      counter += 1;
+	      addToAdjList(&nodeList[counter-2], &nodeList[counter-1], atoi(time));
+	      addToAdjList(&nodeList[counter-1], &nodeList[counter-2], atoi(time));
+	    }
+	  else
+	    {
+	      nodeList[counter] = createNode(node);
+	      counter += 1;
+	      addToAdjList(&nodeList[counter-1], &nodeList[findNodeListNumber(nodeList, connection)], atoi(time));
+	      addToAdjList(&nodeList[findNodeListNumber(nodeList, connection)], &nodeList[counter-1], atoi(time));
+	    }
 
+	}
+      else 
+	{
+	  if (isUnique(uniqueNodes, strdup(connection)))
+	    {
+	      nodeList[counter] = createNode(connection);
+	      counter += 1;
+	      addToAdjList(&nodeList[counter-1], &nodeList[findNodeListNumber(nodeList, node)], atoi(time));
+	      addToAdjList(&nodeList[findNodeListNumber(nodeList, node)], &nodeList[counter-1], atoi(time));
+	    }
+	  else 
+	    {
+	      addToAdjList(&nodeList[findNodeListNumber(nodeList, node)], &nodeList[findNodeListNumber(nodeList, connection)], atoi(time));
+	      addToAdjList(&nodeList[findNodeListNumber(nodeList, connection)], &nodeList[findNodeListNumber(nodeList, node)], atoi(time));
+	    }
+	}
+    }
+  
+
+  return nodeList;
+}
+/*
 int main() {
   char buffer[1024];
   FILE *inputFile;
@@ -47,8 +109,7 @@ int main() {
   if (inputFile == NULL) {
     perror("\"nätverk.txt\" ");
     return (-1);
-  } 
-  
+  }   
   char number[1024];
   char node[1024];
   char connection[1024];
@@ -59,7 +120,7 @@ int main() {
   testList[1] = "Test2";
   testList[2] = "Test3";
 
-  printf("%d\n", countStations(inputFile));
+ printf("%d\n", countStations(inputFile));
 
   while (!feof(inputFile)) {
     if(fgets(buffer, 1024, inputFile) != NULL) {
@@ -72,3 +133,4 @@ int main() {
   
   return 0;
 }
+*/
