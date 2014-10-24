@@ -6,10 +6,15 @@ struct node {
   struct adjList *connections;   
 };
 
+struct line {
+  unsigned short number;
+  struct line *next;
+};
+
 struct adjList {
   struct node *node;
   unsigned short time;
-  unsigned short line;
+  struct line *lines;
   struct adjList *next;
 };
 

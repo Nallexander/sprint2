@@ -17,23 +17,48 @@ struct node createNode(char * name)
   return station;
 }
 
-struct adjList * createAdjList(struct node * node, unsigned short time, unsigned short line) {
-  struct adjList *c = malloc(sizeof (struct adjList));
-  c->node = node;
-  c->time = time;
-  c->line = line;
+struct line * createLineList (unsigned short newLine) {
+  struct line *c = malloc(sizeof (struct line));
+  c->number = newLine;
   c->next = NULL;
   return c;
 }
 
-// seperate module
-void addToAdjList (struct node *Node, struct node *connectionNode, unsigned short time, unsigned short line){
-  
-  struct adjList **dp = &(Node->connections);
+void addLine (struct line *lineList, unsigned short newLine) {
+  struct line **dp = &(lineList->next);
   while (*dp != NULL) { 
     dp = &((*dp)->next);
   }
-  *dp = (createAdjList(connectionNode, time, line));
+  *dp = (createLineList(newLine));
+}
+
+struct adjList * createAdjList(struct node * node, unsigned short time, unsigned short line) {
+  struct adjList *c = malloc(sizeof (struct adjList));
+  c->node = node;
+  c->time = time;
+  c->lines = createLineList(line);
+  c->next = NULL;
+  return c;
+}
+
+
+
+// seperate module
+void addToAdjList (struct node *Node, struct node *connectionNode, unsigned short time, unsigned short line){
+  
+  int write = 1;
+  struct adjList **dp = &(Node->connections);
+  while (*dp != NULL) { 
+    if ((strncmp ((*dp)->node->name, connectionNode->name, 100) == 0)) {
+      addLine ((*dp)->lines, line);
+      write = 0;
+      break;
+    }
+    dp = &((*dp)->next);
+  }
+  if (write == 1) {
+    *dp = (createAdjList(connectionNode, time, line));
+  }
 }
 
 void deleteName (struct node *Node, char *name) {
@@ -99,7 +124,65 @@ void printConnections(struct node *station)
 
 }
 
+int isInLineList (struct line *lineList, unsigned short line) {
+  struct line *currentLine = lineList;
+  while (currentLine != NULL) {
+    if (currentLine->number == line) {
+      return 1;
+    }
+    else {
+      currentLine = currentLine->next;
+    }
+  }
+  return 0;
+}
 
+int isConnected (struct node *currentStation, struct node *previousStation, struct node *endStation, unsigned short line) {
+  struct adjList **dp = &(currentStation->connections);
+  while ((strncmp((*dp)->node->name, endStation->name, 100) != 0) && isInLineList((*dp)->lines, line)) {
+    if (isInLineList ((*dp)->lines, line) == 1) {
+      if (strncmp((*dp)->node->name, previousStation->name, 100) == 0) {
+	dp = &((*dp)->next);
+      }
+      else {
+	dp = &((*dp)->node->connections); //CHECK NULL
+      }
+    }
+    else {
+      dp = &((*dp)->next); //CHECK NULL
+    }
+  }
+  return 1;
+}
+
+struct node *findNextStation (struct node *currentStation, struct node *previousStation, unsigned short line) {
+  if (previousStation == NULL) {
+    
+  }
+  struct adjList **dp = &(currentStation->connections);
+  while ((*dp) != NULL) {
+    if (strncmp ((*dp)->node->name, previousStation->name, 100) == 0) {
+      dp = &((*dp)->next);
+    }
+    else if (isInLineList((*dp)->lines, line) == 1) {
+      return (*dp)->node;
+    } 
+    else {
+      dp = &((*dp)->next);
+    }
+  }
+  return currentStation;
+}
+/*
+void printTrip (struct node *startStation, struct node *endStation, unsigned short line) {
+  struct node * currentStation = startStation;
+  printf("Busslinje: %d\n", line);
+  printf("Start: %c", startStation->name);
+  while ((strncmp(currentStation->name, endStation->name, 100)) != 0) {
+    findNextStation (currentStation, )
+  }
+}
+*/
 //int * numberOfStations
 int main (int argc, char* argv[])
 {
@@ -145,8 +228,8 @@ int main (int argc, char* argv[])
 
   struct node *nodeList2 = createNodeList(inputFile, numberOfStations2);
   printf("\nNamn: %s\n", nodeList2[1].name);
-  printConnections(&nodeList2[1]);
-  printf("%s connects with %s through line %d\n", nodeList2[0].name, nodeList2[0].connections->node->name, nodeList2[0].connections->line);
+  printConnections(&nodeList2[2]);
+  printf("%s connects with %s through line %d\n", nodeList2[2].name, nodeList2[2].connections->node->name, nodeList2[2].connections->lines->next->number);
 
   // skriv ut test
   /* printf("Stationsnamn 1: %s\nStationsnamn 2: %s\nTid mellan stationerna: %d\nTid till nästa: %d\n och: %d\n och: %d\n", a->name, b->name, a->connections->time, a->connections->next->time, a->connections->next->next->time, a->connections->next->next->next->time);
