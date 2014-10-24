@@ -2,13 +2,13 @@
 #include <stdlib.h>
 #include "reseplanerare.h"
 
-  #ifndef _INCL_GUARD_FILE
-  #define _INCL_GUARD_FILE
-  #include "filereader.c"
-  #endif
+#ifndef _INCL_GUARD_FILE
+#define _INCL_GUARD_FILE
+#include "filereader.c"
+#endif
 
-  #ifndef _INCL_GUARD_RESE
-  #define _INCL_GUARD_RESE
+#ifndef _INCL_GUARD_RESE
+#define _INCL_GUARD_RESE
 
 struct node createNode(char * name) 
 {
@@ -17,29 +17,23 @@ struct node createNode(char * name)
   return station;
 }
 
-struct adjList * createAdjList(struct node * node, unsigned short time) {
+struct adjList * createAdjList(struct node * node, unsigned short time, unsigned short line) {
   struct adjList *c = malloc(sizeof (struct adjList));
   c->node = node;
   c->time = time;
+  c->line = line;
   c->next = NULL;
   return c;
 }
 
 // seperate module
-void addToAdjList (struct node *Node, struct node *connectionNode, unsigned short time){
-  int write = 1;
+void addToAdjList (struct node *Node, struct node *connectionNode, unsigned short time, unsigned short line){
+  
   struct adjList **dp = &(Node->connections);
   while (*dp != NULL) { 
-    if (strncmp((*dp)->node->name, connectionNode->name, 100) == 0)
-      {
-	write = 0;
-      } 
     dp = &((*dp)->next);
   }
-  if (write == 1)
-    {
-      *dp = (createAdjList(connectionNode, time));
-    }
+  *dp = (createAdjList(connectionNode, time, line));
 }
 
 void deleteName (struct node *Node, char *name) {
@@ -152,6 +146,7 @@ int main (int argc, char* argv[])
   struct node *nodeList2 = createNodeList(inputFile, numberOfStations2);
   printf("\nNamn: %s\n", nodeList2[1].name);
   printConnections(&nodeList2[1]);
+  printf("%s connects with %s through line %d\n", nodeList2[0].name, nodeList2[0].connections->node->name, nodeList2[0].connections->line);
 
   // skriv ut test
   /* printf("Stationsnamn 1: %s\nStationsnamn 2: %s\nTid mellan stationerna: %d\nTid till nästa: %d\n och: %d\n och: %d\n", a->name, b->name, a->connections->time, a->connections->next->time, a->connections->next->next->time, a->connections->next->next->next->time);
