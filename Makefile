@@ -1,5 +1,8 @@
+GC = gcc
+FLAGS = -Wall -ggdb -std=c99
+
 run:
-	gcc -std=c99 -Wall -ggdb -o res reseplanerare.c
+	$(CC) $(FLAGS) -o res reseplanerare.c
 	./res 
 
 file:
@@ -10,3 +13,6 @@ gdb:
 
 clean:
 	rm -f reseplanerare.o filereader.o 
+
+CUnit:
+	gcc -Wall CUNIT_filereader.c  -o CUNIT_filereader
