@@ -45,8 +45,35 @@ unsigned short countStations(FILE *inputFile) {
   return counter;
 }
 
+unsigned short *createBusLineList(FILE *inputFile) {
+  unsigned short *lineList = malloc(sizeof(unsigned int)*100);
+  char number[1024];
+  char node[1024];
+  char connection[1024];
+  char time[1024];
 
-struct node *createNodeList(FILE *inputFile, unsigned short numberOfStations)
+  for (int i = 0; i < 100; i++) {
+    lineList[i] = 0;
+  }
+  while (!feof(inputFile)) {
+    fscanf(inputFile, "%[^,], %[^,], %[^,], %[^\n]", number, node, connection, time);
+    for (int i = 0; i < 100; i++) {
+      if (lineList[i] == 0) {
+	lineList[i] = atoi(number);
+	break;
+      }
+      if (atoi(time) == lineList[i]) {	
+	break;
+      }
+    }
+    
+  }
+  
+  return lineList;
+}
+
+
+struct node *createNodeList(FILE *inputFile, unsigned short numberOfStations) //numberOfStations statiskt i hela programmet
 {
   int counter = 0;
   char *uniqueNodes[numberOfStations];
