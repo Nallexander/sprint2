@@ -352,8 +352,10 @@ int main (int argc, char* argv[])
 
   //TEST AV NYA FUNKTIONERNA ------------------------------------------------------------------------------
 
+  //Bugg när man söker med Centralstationen och Grindstugan//
+
   struct node* station1 = findStation("Centralstationen", nodeList, numberOfStations2);
-  struct node* station2 = findStation("Ostra Nyby", nodeList, numberOfStations2);
+  struct node* station2 = findStation("Lingonvagen", nodeList, numberOfStations2);
   printPossibleTrips(station1, station2, busLineList);
 
   //TEST AV NYA FUNKTIONERNA ------------------------------------------------------------------------------
