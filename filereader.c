@@ -62,7 +62,7 @@ unsigned short *createBusLineList(FILE *inputFile) {
 	lineList[i] = atoi(number);
 	break;
       }
-      if (atoi(time) == lineList[i]) {	
+      if (atoi(number) == lineList[i]) {	
 	break;
       }
     }

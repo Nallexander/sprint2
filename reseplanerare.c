@@ -142,7 +142,7 @@ int isConnected (struct node *currentStation, struct node *previousStation, stru
   if (currentStation == endStation) { //basfall
     return 1;
   } 
-  while ((strncmp((*dp)->node->name, endStation->name, 100) != 0) && isInLineList((*dp)->lines, line)) {
+  while ((strncmp((*dp)->node->name, endStation->name, 100) != 0)) /*&& isInLineList((*dp)->lines, line))*/ {
     if (((*dp)->next) != NULL) {
       if (isInLineList ((*dp)->lines, line) == 1) {
 	if (strncmp((*dp)->node->name, previousStation->name, 100) == 0) {
@@ -162,7 +162,12 @@ int isConnected (struct node *currentStation, struct node *previousStation, stru
       return 0;
     }
   }
-  return 1;
+  if (isInLineList((*dp)->lines, line)) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
 }
 
 
@@ -171,7 +176,12 @@ int isConnected (struct node *currentStation, struct node *previousStation, stru
 struct node *findNextStation (struct node *currentStation, struct node *endStation, unsigned short line) {
   
   struct adjList **dp = &(currentStation->connections);
-  while (((*dp)->next != NULL) || ((*dp) == currentStation->connections)) { //tar med basfallet
+  if (isInLineList((*dp)->lines, line) == 1) {
+    if (isConnected((*dp)->node, currentStation, endStation, line)) {
+      return (*dp)->node;
+    }
+  }
+    while ((*dp)->next != NULL) { //tar med basfallet
     if (isInLineList((*dp)->lines, line) == 1) {
       if (isConnected((*dp)->node, currentStation, endStation, line)) {
 	return (*dp)->node;
@@ -203,15 +213,18 @@ unsigned short *linesConnectingStations(struct node* station1, struct node* stat
   while (busLineList[i] != 0) {
     
     nextStation = findNextStation(station1, station2, busLineList[i]);
-    if (nextStation == NULL) { break;}
-    if (isConnected(nextStation, station1, station2, busLineList[i]) == 1) {
-      while (connectionList[j] != 0) {
-	j++;
+    if (nextStation == NULL) { i++;}
+    else { 
+      if (isConnected(nextStation, station1, station2, busLineList[i]) == 1) {
+	while (connectionList[j] != 0) {
+	  j++;
+	}
       }
       connectionList[j] = busLineList[i]; 
       j = 0;
+      i++;
     }
-    i++;
+    
     
   }
   return connectionList;
@@ -247,6 +260,32 @@ void printTrip (struct node *startStation, struct node *endStation, unsigned sho
     
   }
 }
+
+struct node* findStation(char * station, struct node* stationList, unsigned short numberOfStations) { //Se upp för segfault om man försöker skriva NULL
+  int i = 0;
+  while (strncmp(station, stationList[i].name, 100) != 0) {
+    i++;
+    if (i == numberOfStations) {
+      return NULL;
+    }
+  }
+  return (stationList + i);
+}
+
+void printPossibleTrips(struct node* station1, struct node* station2, unsigned short* lineList) {
+  if ((station1 == NULL) || (station2 == NULL)) { 
+    printf("There is no station with this name.\n");
+  }
+  else {
+    unsigned short* busLineList = linesConnectingStations(station1, station2, lineList);
+    int i = 0;
+    while (busLineList[i] != 0) {
+      printTrip(station1, station2, busLineList[i]);
+      i++;
+    }
+  }
+}
+  
 
 //int * numberOfStations
 
@@ -294,15 +333,30 @@ int main (int argc, char* argv[])
   printf("%d\n", busLineList[0]);
 
   rewind(inputFile);
-
+  
   struct node *nodeList = createNodeList(inputFile, numberOfStations2);
-  //printf("\nNamn: %s\n", nodeList[1].name);
+  /*
+  printf("\nNamn: %s\n", nodeList[90].name);
   //printConnections(&nodeList[2]);
   //printf("%s connects with %s through line %d\n", nodeList[2].name, nodeList[2].connections->node->name, nodeList[2].connections->lines->next->number);
-  unsigned short *lineList1 = linesConnectingStations(&nodeList[0], &nodeList[1], busLineList);
-  printf("\nDet här ska va 10:%d\n", lineList1[0]);
+  //unsigned short *lineList1 = linesConnectingStations(&nodeList[1], &nodeList[2], busLineList);
+  //printf("\nDet här ska va 10:%d\n", lineList1[1]);
 
-  printTrip(&(nodeList[10]), &(nodeList[0]), 10);
+  printTrip(&(nodeList[1]), &(nodeList[2]), 20);
+  struct node* testStation = findStation("Prastgardsgatan", nodeList, numberOfStations2);
+  if (testStation != NULL) {
+    printf("Station Bio: %s\n", (testStation)->name);
+  }
+  */
+  //printTrip(&nodeList[3], &nodeList[4], 2);
+
+  //TEST AV NYA FUNKTIONERNA ------------------------------------------------------------------------------
+
+  struct node* station1 = findStation("Centralstationen", nodeList, numberOfStations2);
+  struct node* station2 = findStation("Ostra Nyby", nodeList, numberOfStations2);
+  printPossibleTrips(station1, station2, busLineList);
+
+  //TEST AV NYA FUNKTIONERNA ------------------------------------------------------------------------------
 
   // skriv ut test
   /* printf("Stationsnamn 1: %s\nStationsnamn 2: %s\nTid mellan stationerna: %d\nTid till nästa: %d\n och: %d\n och: %d\n", a->name, b->name, a->connections->time, a->connections->next->time, a->connections->next->next->time, a->connections->next->next->next->time);
