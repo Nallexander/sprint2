@@ -26,5 +26,7 @@ void deleteNode(char *name, struct node *nodeList, unsigned short *numberOfStati
 void deleteConnection(struct node *node1, struct node *node2);
 unsigned short findNodeListNumber(struct node * nodeList, char * station);
 void printConnections(struct node *station);
+struct node* findStation(char* station, struct node* stationList, unsigned short numberOfStations);
+void printPossibleTrips(struct node* station1, struct node* station2, unsigned short* lineList);
 
 #endif
