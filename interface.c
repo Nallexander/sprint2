@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "reseplanerare.h"
+#include "filereader.h"
+//#include "interface.h"
 
 int main(void){
   puts("Välkommen!\n\n");
