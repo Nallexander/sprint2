@@ -4,8 +4,6 @@
 #include "reseplanerare.h"
 #include "filereader.h"
 
-
-
 struct node createNode(char * name) 
 {
   strdup(name);
@@ -284,10 +282,10 @@ void printPossibleTrips(struct node* station1, struct node* station2, unsigned s
   
 
 //int * numberOfStations
-
+/*
 int main (int argc, char* argv[])
 {
-  /*
+ 
   unsigned short numberOfStations = 5;
   if (argc == 2)
     {
@@ -315,8 +313,8 @@ int main (int argc, char* argv[])
   */
   //FILEREADER
   //char buffer[1024];
-  FILE *inputFile;
-
+  //FILE *inputFile;
+/*
   inputFile = fopen("nätverk.txt", "r");
   if (inputFile == NULL) {
     perror("\"nätverk.txt\" ");
@@ -331,7 +329,7 @@ int main (int argc, char* argv[])
   rewind(inputFile);
   
   struct node *nodeList = createNodeList(inputFile, numberOfStations2);
-  /*
+  
   printf("\nNamn: %s\n", nodeList[90].name);
   //printConnections(&nodeList[2]);
   //printf("%s connects with %s through line %d\n", nodeList[2].name, nodeList[2].connections->node->name, nodeList[2].connections->lines->next->number);
@@ -349,11 +347,11 @@ int main (int argc, char* argv[])
   //TEST AV NYA FUNKTIONERNA ------------------------------------------------------------------------------
 
   //Bugg när man söker med Centralstationen och Grindstugan//
-
+/*
   struct node* station1 = findStation("Centralstationen", nodeList, numberOfStations2);
   struct node* station2 = findStation("Lingonvagen", nodeList, numberOfStations2);
   printPossibleTrips(station1, station2, busLineList);
-
+*/
   //TEST AV NYA FUNKTIONERNA ------------------------------------------------------------------------------
 
   // skriv ut test
@@ -375,5 +373,5 @@ int main (int argc, char* argv[])
 
   free(nodeList);
   */
-  return 0;
-} 
+  // return 0;
+// } 
