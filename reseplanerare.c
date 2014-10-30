@@ -1,14 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "reseplanerare.h"
+#include "filereader.h"
 
-#ifndef _INCL_GUARD_FILE
-#define _INCL_GUARD_FILE
-#include "filereader.c"
-#endif
 
-#ifndef _INCL_GUARD_RESE
-#define _INCL_GUARD_RESE
 
 struct node createNode(char * name) 
 {
@@ -381,5 +377,3 @@ int main (int argc, char* argv[])
   */
   return 0;
 } 
-
-#endif

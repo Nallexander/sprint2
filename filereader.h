@@ -1,5 +1,6 @@
 #ifndef FILEREADER_H
 #define FILEREADER_H
+#include <stdio.h>
 
 int isUnique (char **list, char *element);
 unsigned short countStations(FILE *inputFile);

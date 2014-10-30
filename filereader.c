@@ -2,11 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "filereader.h"
+#include "reseplanerare.h"
 
-
-#ifndef _INCL_GUARD_RESE
-#include "reseplanerare.c"
-#endif
 
 
 
