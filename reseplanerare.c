@@ -4,6 +4,7 @@
 #include "reseplanerare.h"
 #include "filereader.h"
 
+//Creates a new node with the name name and an empty list of connections
 struct node createNode(char * name) 
 {
   strdup(name);
@@ -11,6 +12,7 @@ struct node createNode(char * name)
   return station;
 }
 
+//Creates a new linked list with newLine as the first element and no next element
 struct line * createLineList (unsigned short newLine) {
   struct line *c = malloc(sizeof (struct line));
   c->number = newLine;
@@ -18,6 +20,7 @@ struct line * createLineList (unsigned short newLine) {
   return c;
 }
 
+//Creates a new linked list using createLineList if lineList is NULL, else adds newLine as the first free space of lineList
 void addLine (struct line *lineList, unsigned short newLine) {
   struct line **dp = &(lineList->next);
   while (*dp != NULL) { 
@@ -26,6 +29,7 @@ void addLine (struct line *lineList, unsigned short newLine) {
   *dp = (createLineList(newLine));
 }
 
+//Creates a new adjList with the node as the element node, time as the element time and a lineList with line as the element connections
 struct adjList * createAdjList(struct node * node, unsigned short time, unsigned short line) {
   struct adjList *c = malloc(sizeof (struct adjList));
   c->node = node;
@@ -37,7 +41,7 @@ struct adjList * createAdjList(struct node * node, unsigned short time, unsigned
 
 
 
-// seperate module
+//Adds connectionNode, time and line to Nodes adjList. If connectionNode already exist, line is added to the lineList of the existing entry in adjList
 void addToAdjList (struct node *Node, struct node *connectionNode, unsigned short time, unsigned short line){
   
   int write = 1;
@@ -55,6 +59,7 @@ void addToAdjList (struct node *Node, struct node *connectionNode, unsigned shor
   }
 }
 
+//Deletes the entry with Node->name name from Node's adjList (if there is an entry with that name)
 void deleteName (struct node *Node, char *name) {
   struct adjList **currentAdjList = &(Node->connections);
   while ((*currentAdjList != NULL)) {
@@ -71,6 +76,7 @@ void deleteName (struct node *Node, char *name) {
   }
 }
 
+//Deletes name from every element in nodeList's adjList (if it exists) using deleteName. Also deletes the entry with name name from nodeList by copying the last element of nodeList to the entry's position.
 void deleteNode (char *name, struct node *nodeList, unsigned short *numberOfStations)
 {
   for (int i = 0; i <= (*numberOfStations - 1); i++) {
@@ -86,13 +92,14 @@ void deleteNode (char *name, struct node *nodeList, unsigned short *numberOfStat
   } 
 }
 
-
+//Deletes the connection between node1 and node2 and vice versa using deleteName
 void deleteConnection (struct node *node1, struct node *node2) {
   deleteName(node1, (node2->name));
   deleteName(node2, (node1->name));
 }
 
-// Vet att station finns i nodeList
+
+//Knowing that a Node with name station exists in nodeList, it returns the index number of that entry
 unsigned short findNodeListNumber(struct node * nodeList, char * station)
 {
   unsigned short countStation = 0;
@@ -105,10 +112,10 @@ unsigned short findNodeListNumber(struct node * nodeList, char * station)
 
 
 
-//printStations
+//Prints all stations that exists in station's adjList
 void printConnections(struct node *station)
 {
-  printf("Connections:\n");
+  printf("%s connections:\n", station->name);
   struct adjList **dp = &(station->connections);
   while ((*dp) != NULL) {
     printf("%s\n", (*dp)->node->name);
@@ -118,6 +125,7 @@ void printConnections(struct node *station)
 
 }
 
+//Returns true (1) if line exists in lineList and false (0) otherwise
 int isInLineList (struct line *lineList, unsigned short line) {
   struct line *currentLine = lineList;
   while (currentLine != NULL) {
@@ -130,26 +138,26 @@ int isInLineList (struct line *lineList, unsigned short line) {
   }
   return 0;
 }
-// returns 1 if currentStation is connected with endStation thorugh line line but not thorugh previousStation.
+// returns true (1) if currentStation is connected with endStation through line line but not thorugh previousStation.
 int isConnected (struct node *currentStation, struct node *previousStation, struct node *endStation, unsigned short line) {
   struct adjList **dp = &(currentStation->connections);
   if (currentStation == endStation) { //basfall
     return 1;
   } 
-  while ((strncmp((*dp)->node->name, endStation->name, 100) != 0)) /*&& isInLineList((*dp)->lines, line))*/ {
+  while ((strncmp((*dp)->node->name, endStation->name, 100) != 0))  {
     if (((*dp)->next) != NULL) {
       if (isInLineList ((*dp)->lines, line) == 1) {
 	if (strncmp((*dp)->node->name, previousStation->name, 100) == 0) {
 	  dp = &((*dp)->next);
 	}
 	else {
-	  previousStation = currentStation; //CHECK NULL
+	  previousStation = currentStation;
 	  currentStation = ((*dp)->node);
 	  dp = &((*dp)->node->connections);
 	}
       }
       else {
-	dp = &((*dp)->next); //CHECK NULL
+	dp = &((*dp)->next); 
       }
     }
     else {
@@ -164,9 +172,7 @@ int isConnected (struct node *currentStation, struct node *previousStation, stru
   }
 }
 
-
-
-
+//Finds the next station from currentStation in the walk to endStation through line line
 struct node *findNextStation (struct node *currentStation, struct node *endStation, unsigned short line) {
   
   struct adjList **dp = &(currentStation->connections);
@@ -193,7 +199,7 @@ struct node *findNextStation (struct node *currentStation, struct node *endStati
   return NULL; 
 }
 
-//find which lines that connects two nodes
+//Finds which lines in busLineList that connect station1 with station2 and a pointer to an array of those lines. There can be no more than 50 lines connecting the stations.
 unsigned short *linesConnectingStations(struct node* station1, struct node* station2, unsigned short *busLineList) {
   int i= 0;
   int j=0;
@@ -224,6 +230,7 @@ unsigned short *linesConnectingStations(struct node* station1, struct node* stat
   return connectionList;
 }
 
+//Station1 and station2 is connected through a line in adjList. Returns the total time between the stations.
 unsigned short findTimeAdjacentStation (struct node *station1, struct node *station2) {
   struct adjList **dp = &(station1->connections);
   while (strncmp((*dp)->node->name, station2->name, 100) != 0) {
@@ -232,7 +239,7 @@ unsigned short findTimeAdjacentStation (struct node *station1, struct node *stat
   return (*dp)->time;
 }
 
-
+//Prints startStation, endStation and all stations between them when travelling with line line together with the total time of travelling.
 void printTrip (struct node *startStation, struct node *endStation, unsigned short line) {
   int time = 0;
   struct node * currentStation = startStation;
@@ -255,6 +262,7 @@ void printTrip (struct node *startStation, struct node *endStation, unsigned sho
   }
 }
 
+//Returns the node with name station in stationList, and if there are not a node with name station it returns NULL.  
 struct node* findStation(char * station, struct node* stationList, unsigned short numberOfStations) { //Se upp för segfault om man försöker skriva NULL
   int i = 0;
   while (strncmp(station, stationList[i].name, 100) != 0) {
@@ -266,6 +274,7 @@ struct node* findStation(char * station, struct node* stationList, unsigned shor
   return (stationList + i);
 }
 
+//Prints all trips (using printTrip) between station1 and station2. 
 void printPossibleTrips(struct node* station1, struct node* station2, unsigned short* lineList) {
   if ((station1 == NULL) || (station2 == NULL)) { 
     printf("There is no station with this name.\n");
