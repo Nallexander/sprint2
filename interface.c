@@ -1,14 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include "reseplanerare.h"
 #include "filereader.h"
-//#include "interface.h"
+
 
 int main(void){
 
   FILE *inputFile;
-  inputFile = fopen("nätverk.txt", "r");
+  while ( !(inputFile = fopen("nätverk.txt", "r")) ) {
+    printf("ERROR: %s\nPlease place nätverk.txt in folder and press any key.", strerror(errno));
+    getchar();
+  }
   if (inputFile == NULL) {
     perror("\"nätverk.txt\" ");
     return (-1);

@@ -1,24 +1,41 @@
+/**
+\author Alexander Lind & Anton Kallbom 
+
+*/
+	
 #ifndef RESEPLANERARE_H
 #define RESEPLANERARE_H
 
 struct node {
-  char * name;
-  struct adjList *connections;   
+  char * name; ///< Name of station
+  struct adjList *connections; ///< List of connections
 };
 
 struct line {
-  unsigned short number;
-  struct line *next;
+  unsigned short number; ///< Number of busline.
+  struct line *next; ///< Next member of the line list.
 };
 
 struct adjList {
-  struct node *node;
-  unsigned short time;
-  struct line *lines;
-  struct adjList *next;
+  struct node *node; ///< The connected station.
+  unsigned short time; ///< The time between the stations.
+  struct line *lines; ///< The linest that connect the stations.
+  struct adjList *next; ///< The next connection.
 };
+/** @brief Creates a new node with the name name and an empty list of connections.
+ * 
+ * 
+ * 
+ * @param name The name of the node.
+ * @return A node with name name.
+ */
+struct node createNode(char * name); 
+/// Creates a new linked list with newLine as the first element and no next element
+/// \param newLine - The number of the line.
+/// \return A line list with number newline and next NULL.
+struct line * createLineList (unsigned short newLine);
 
-struct node createNode(char * name);
+
 struct adjList *createAdjList(struct node * node, unsigned short time, unsigned short line);
 void addToAdjList(struct node *Node, struct node *connectionNode, unsigned short time, unsigned short line);
 void deleteName(struct node *Node, char *name);
